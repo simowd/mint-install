@@ -11,5 +11,7 @@ chmod +x install-work.sh
 And to run the file you should run them indivually:
 
 `sudo sh ./install-script.sh`
+
 `sudo sh ./install-programs.sh`
+
 `sudo sh ./install-work.sh`

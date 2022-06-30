@@ -57,7 +57,7 @@ StartupWMClass=spotify" >> SpotifyAdblock.desktop
 cd ~
 
 #Installing OBS
-sudo add-apt-repository ppa:obsproject/obs-studio
+sudo add-apt-repository -y ppa:obsproject/obs-studio
 sudo apt update
 sudo apt install -y ffmpeg obs-studio
 
@@ -78,6 +78,9 @@ sudo apt update
 sudo apt install -y code
 
 #Installing OnlyOffice
+echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+sudo apt-get install -y ttf-mscorefonts-installer
+
 mkdir -p ~/.gnupg
 chmod 700 ~/.gnupg
 gpg --no-default-keyring --keyring gnupg-ring:/tmp/onlyoffice.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys CB2DE8E5
