@@ -65,7 +65,6 @@ sudo apt install -y ffmpeg obs-studio
 sudo flatpak install -y flathub com.getpostman.Postman
 sudo flatpak install -y flathub org.telegram.desktop
 sudo flatpak install -y flathub com.slack.Slack
-sudo flatpak install -y flathub com.github.IsmaelMartinez.teams_for_linux
 
 #Installing VSCode
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
@@ -76,6 +75,9 @@ rm -f packages.microsoft.gpg
 sudo apt install -y apt-transport-https
 sudo apt update
 sudo apt install -y code
+
+sudo echo "fs.inotify.max_user_watches=524288" > /etc/sysctl.conf
+sudo sysctl -p
 
 #Installing OnlyOffice
 mkdir -p ~/.gnupg
