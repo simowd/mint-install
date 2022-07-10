@@ -10,8 +10,8 @@ chmod +x install-work.sh
 
 And to run the file you should run them indivually:
 
-`sudo --preserve-env=HOME sh ./install-script.sh`
+`sudo CUSTOM_USER=$(whoami) --preserve-env=HOME sh ./install-script.sh`
 
-`sudo --preserve-env=HOME sh ./install-programs.sh`
+`sudo CUSTOM_USER=$(whoami) --preserve-env=HOME sh ./install-programs.sh`
 
 `sudo --preserve-env=HOME sh ./install-work.sh`

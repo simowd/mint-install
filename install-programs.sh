@@ -28,7 +28,7 @@ sudo systemctl start docker
 sudo docker run hello-world
 
 sudo groupadd docker
-sudo usermod -aG docker $USER
+sudo usermod -aG docker $CUSTOM_USER
 
 #Installing Flatpak Apps
 sudo flatpak install -y flathub com.getpostman.Postman
@@ -50,12 +50,14 @@ sudo flatpak override --user --filesystem="~/.spotify-adblock/spotify-adblock.so
 
 cd /usr/share/applications
 touch SpotifyAdblock.desktop
-echo "[Desktop Entry]
+echo -n "[Desktop Entry]
 Type=Application
 Name=Spotify (adblock)
 GenericName=Music Player
 Icon=com.spotify.Client
-Exec=flatpak run --file-forwarding --command=sh com.spotify.Client -c 'eval "$(sed s#LD_PRELOAD=#LD_PRELOAD=$HOME/.spotify-adblock/spotify-adblock.so:#g /app/bin/spotify)"' @@u %U @@
+Exec=flatpak run --file-forwarding --command=sh com.spotify.Client -c 'eval \"$" >> SpotifyAdblock.desktop
+
+echo -n "(sed s#LD_PRELOAD=#LD_PRELOAD=$HOME/.spotify-adblock/spotify-adblock.so:#g /app/bin/spotify)\"' @@u %U @@
 Terminal=false
 MimeType=x-scheme-handler/spotify;
 Categories=Audio;Music;Player;AudioVideo;

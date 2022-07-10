@@ -36,7 +36,7 @@ sudo dnf -y install gnome-extensions-app.x86_64 gnome-tweaks.noarch
 
 #Install zsh and oh-my-zsh
 sudo dnf -y install curl wget zsh git vim unzip
-sudo chsh -s $(which zsh)
+sudo chsh -s $(which zsh) $CUSTOM_USER
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
