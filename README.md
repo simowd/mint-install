@@ -1,4 +1,4 @@
-# Linux Mint 20.3 files and programs installation
+# Fedora 36 files and programs installation
 
 To run the repo you should:
 
