@@ -1,3 +1,4 @@
+#!/bin/bash
 #Installing Angular
 sudo npm install -g @angular/cli
 
@@ -9,5 +10,3 @@ rm -f Rider.tar.gz
 
 cd /opt/'JetBrains Rider-2022.1.2'/bin
 sh ./rider.sh
-
-
