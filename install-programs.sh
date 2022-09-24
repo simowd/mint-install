@@ -3,23 +3,25 @@
 #"""""""""""""""""""""""""""""""""""""
 
 #Install docker
-sudo apt remove docker-desktop
-sudo rm -r $HOME/.docker/desktop
-sudo rm /usr/local/bin/com.docker.cli
-sudo apt purge docker-desktop
-sudo apt remove docker docker-engine docker.io containerd runc
+sudo apt-get remove docker docker-engine docker.io containerd runc
 
 sudo apt update
+
+sudo apt-get install -y \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
 
 sudo mkdir -p /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+ curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
-sudo echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release; echo "$UBUNTU_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt update
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 sudo docker run hello-world
 
@@ -41,8 +43,8 @@ make
 sudo make install
 
 cd /usr/share/applications
-touch SpotifyAdblock.desktop
-echo "[Desktop Entry]
+sudo touch SpotifyAdblock.desktop
+sudo echo "[Desktop Entry]
 Type=Application
 Name=Spotify (adblock)
 GenericName=Music Player
@@ -54,17 +56,14 @@ MimeType=x-scheme-handler/spotify;
 Categories=Audio;Music;Player;AudioVideo;
 StartupWMClass=spotify" >> SpotifyAdblock.desktop
 
-cd ~
+// Installing flatpak
+sudo apt install -y flatpak
+sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-#Installing OBS
-sudo add-apt-repository -y ppa:obsproject/obs-studio
-sudo apt update
-sudo apt install -y ffmpeg obs-studio
-
-#Installing Flatpak Apps
+//Installing flatpaks
+sudo flatpak install flathub com.obsproject.Studio
 sudo flatpak install -y flathub com.getpostman.Postman
 sudo flatpak install -y flathub org.telegram.desktop
-sudo flatpak install -y flathub com.slack.Slack
 
 #Installing VSCode
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
@@ -76,7 +75,7 @@ sudo apt install -y apt-transport-https
 sudo apt update
 sudo apt install -y code
 
-sudo echo "fs.inotify.max_user_watches=524288" > /etc/sysctl.conf
+echo "fs.inotify.max_user_watches=524288" | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 
 #Installing OnlyOffice
