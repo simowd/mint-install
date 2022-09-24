@@ -21,8 +21,6 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 sudo apt install -y python3 python3-pip libssl-dev libffi-dev python3-venv
 
 #Install Haxe
-sudo add-apt-repository ppa:haxe/releases -y
-sudo apt-get update
 sudo apt-get install haxe -y
 mkdir ~/.personal/haxelib && haxelib setup ~/.personal/haxelib
 
@@ -30,7 +28,7 @@ sudo apt-get -y install libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev 
 
 cd /opt
 sudo wget -O hashlink.tar.gz https://github.com/HaxeFoundation/hashlink/archive/refs/tags/1.12.tar.gz
-tar xzf hashlink.tar.gz
+sudo tar xzf hashlink.tar.gz
 cd hashlink-1.12
 sudo make
 sudo make install
@@ -40,10 +38,8 @@ sudo ldconfig
 cd ~
 
 #Install Nodejs
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+sudo curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 sudo apt-get install -y nodejs
-
-sudo npm install npm -g
 
 #Install Yarn
 curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/yarnkey.gpg >/dev/null
@@ -54,7 +50,7 @@ sudo apt-get update && sudo apt-get install -y yarn
 sudo apt install -y default-jdk default-jre maven
 
 #Installing Dotnet
-wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
 rm packages-microsoft-prod.deb
 
