@@ -29,9 +29,9 @@ mkdir ~/.personal/haxelib && haxelib setup ~/.personal/haxelib
 sudo apt-get -y install libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev libsqlite3-dev
 
 cd /opt
-sudo wget -O hashlink.tar.gz https://github.com/HaxeFoundation/hashlink/archive/refs/tags/1.12.tar.gz
+sudo wget -O hashlink.tar.gz https://github.com/HaxeFoundation/hashlink/archive/refs/tags/1.13.tar.gz
 tar xzf hashlink.tar.gz
-cd hashlink-1.12
+cd hashlink-1.13
 sudo make
 sudo make install
 
@@ -45,29 +45,22 @@ sudo apt-get install -y nodejs
 
 sudo npm install npm -g
 
+# Installing Node Version Manager
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+
 #Install Yarn
-curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/yarnkey.gpg >/dev/null
-echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt-get update && sudo apt-get install -y yarn
+sudo npm install --global yarn
 
 #Installing Java
 sudo apt install -y default-jdk default-jre maven
 
 #Installing Dotnet
-wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-sudo dpkg -i packages-microsoft-prod.deb
-rm packages-microsoft-prod.deb
-
 #Installing Dotnet SDK
-sudo apt-get update; \
-  sudo apt-get install -y apt-transport-https && \
-  sudo apt-get update && \
+sudo apt-get update && \
   sudo apt-get install -y dotnet-sdk-6.0
 
 #Installing Dotnet Runtime
-sudo apt-get update; \
-  sudo apt-get install -y apt-transport-https && \
-  sudo apt-get update && \
+sudo apt-get update && \
   sudo apt-get install -y aspnetcore-runtime-6.0
 
 #Fonts
