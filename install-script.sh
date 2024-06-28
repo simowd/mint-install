@@ -10,11 +10,18 @@ mkdir ~/.personal
 #Change hostname
 sudo hostnamectl set-hostname fedora
 
+#Fix time on dual-boot systems
+sudo timedatectl set-local-rtc '0'
+
 #Change DNF settings
 echo "
-fastestmirror=true
+gpgcheck=1
+installonly_limit=3
+clean_requirements_on_remove=True
+best=False
+skip_if_unavailable=True
+fastestmirror=1
 deltarpm=true
-defaultyes=True
 keepcache=True
 max_parallel_downloads=10" | sudo tee -a /etc/dnf/dnf.conf
 
@@ -24,9 +31,23 @@ sudo dnf -y update
 #Installing rpm fusion
 sudo dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
+#Update App-stream metadata
+sudo dnf -y groupupdate core
+
 #Install media codecs
-sudo dnf -y groupupdate multimedia --setop="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
-sudo dnf -y groupupdate sound-and-video
+sudo dnf -y groupupdate 'core' 'multimedia' 'sound-and-video' --setopt='install_weak_deps=False' --exclude='PackageKit-gstreamer-plugin' --allowerasing && sync
+sudo dnf -y swap 'ffmpeg-free' 'ffmpeg' --allowerasing
+sudo dnf -y install gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg
+sudo dnf -y install lame\* --exclude=lame-devel
+sudo dnf -y group upgrade --with-optional Multimedia
+
+#Hardware video acceleration
+sudo dnf -y install ffmpeg ffmpeg-libs libva libva-utils
+sudo dnf -y swap libva-intel-media-driver intel-media-driver --allowerasing
+
+#OpenH264 for Firefox
+sudo dnf -y config-manager --set-enabled fedora-cisco-openh264
+sudo dnf install -y openh264 gstreamer1-plugin-openh264 mozilla-openh264
 
 #Adding flathub repository
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -34,8 +55,11 @@ sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub
 #Installing GNOME addons
 sudo dnf -y install gnome-extensions-app.x86_64 gnome-tweaks.noarch
 
+#Installing PopOS shell
+sudo dnf install -y gnome-shell-extension-pop-shell xprop
+
 #Install zsh and oh-my-zsh
-sudo dnf -y install curl wget zsh git vim unzip
+sudo dnf -y install curl wget zsh git neovim unzip
 sudo chsh -s $(which zsh) $CUSTOM_USER
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
@@ -57,9 +81,9 @@ mkdir ~/.personal/haxelib && haxelib setup ~/.personal/haxelib
 sudo dnf -y install libpng-devel turbojpeg-devel libvorbis-devel openal-soft-devel SDL2-devel mesa-libGLU-devel mbedtls-devel libuv-devel sqlite-devel pcre-devel
 
 cd /opt
-sudo wget -O hashlink.tar.gz https://github.com/HaxeFoundation/hashlink/archive/refs/tags/1.12.tar.gz
+sudo wget -O hashlink.tar.gz https://github.com/HaxeFoundation/hashlink/archive/refs/tags/1.14.tar.gz
 tar xzf hashlink.tar.gz
-cd hashlink-1.12
+cd hashlink-1.14
 sudo make
 sudo make install
 
@@ -68,22 +92,27 @@ sudo ldconfig
 cd
 
 #Install Nodejs
-curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
-sudo dnf -y install nodejs
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.bashrc
 
-sudo npm install npm -g
+nvm install --lts
 
 #Install Yarn
-curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
-sudo dnf -y install yarn
+corepack enable
 
 #Installing Java
 sudo dnf -y install java-11-openjdk.x86_64
 sudo dnf -y group install "Java Development"
 
 #Installing Dotnet
-sudo dnf -y install dotnet-sdk-6.0
-sudo dnf -y install aspnetcore-runtime-6.0
+wget -O dotnet5.tar.gz https://download.visualstudio.microsoft.com/download/pr/904da7d0-ff02-49db-bd6b-5ea615cbdfc5/966690e36643662dcc65e3ca2423041e/dotnet-sdk-5.0.408-linux-x64.tar.gz
+sudo mkdir -p /usr/share/dotnet
+sudo tar zxf dotnet5.tar.gz -C /usr/share/dotnet
+
+sudo dnf -y install dotnet-sdk-8.0 dotnet-sdk-6.0
+sudo dnf -y install aspnetcore-runtime-8.0 aspnetcore-runtime-6.0
+
+sudo dnf -y install compat-openssl10
 
 #Fonts
 sudo dnf -y install mscore-fonts
@@ -102,3 +131,89 @@ sudo mv ttf Cascadia
 sudo rm -f Cascadia.zip
 
 sudo fc-cache -f -v
+
+#"""""""""""""""""""""""""""""""""""""
+#""" Installing essential programs """
+#"""""""""""""""""""""""""""""""""""""
+
+#Install docker
+sudo dnf -y remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-engine-selinux \
+                  docker-engine
+
+sudo dnf -y install dnf-plugins-core
+
+sudo dnf config-manager \
+    --add-repo \
+    https://download.docker.com/linux/fedora/docker-ce.repo
+
+sudo dnf -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+sudo systemctl start docker
+
+sudo docker run hello-world
+
+sudo groupadd docker
+sudo usermod -aG docker $CUSTOM_USER
+
+#Installing Flatpak Apps
+sudo flatpak install -y flathub com.getpostman.Postman
+sudo flatpak install -y flathub org.telegram.desktop
+sudo flatpak install -y flathub com.slack.Slack
+sudo flatpak install -y flathub com.obsproject.Studio
+sudo flatpak install -y flathub com.spotify.Client
+sudo flatpak install -y flathub org.onlyoffice.desktopeditors
+sudo flatpak install -y flathub io.dbeaver.DBeaverCommunity
+#Installing Spotify
+git clone https://github.com/abba23/spotify-adblock.git ~/.personal/spotify-adblock
+cd ~/.personal/spotify-adblock
+make
+sudo make install
+
+sudo mkdir -p ~/.spotify-adblock && cp target/release/libspotifyadblock.so ~/.spotify-adblock/spotify-adblock.so
+sudo mkdir -p ~/.config/spotify-adblock && cp config.toml ~/.config/spotify-adblock
+sudo flatpak override --user --filesystem="~/.spotify-adblock/spotify-adblock.so" --filesystem="~/.config/spotify-adblock/config.toml" com.spotify.Client
+
+cd /usr/share/applications
+touch SpotifyAdblock.desktop
+echo -n "[Desktop Entry]
+Type=Application
+Name=Spotify (adblock)
+GenericName=Music Player
+Icon=com.spotify.Client
+Exec=flatpak run --file-forwarding --command=sh com.spotify.Client -c 'eval \"$" >> SpotifyAdblock.desktop
+
+echo -n "(sed s#LD_PRELOAD=#LD_PRELOAD=$HOME/.spotify-adblock/spotify-adblock.so:#g /app/bin/spotify)\"' @@u %U @@
+Terminal=false
+MimeType=x-scheme-handler/spotify;
+Categories=Audio;Music;Player;AudioVideo;
+StartupWMClass=spotify" >> SpotifyAdblock.desktop
+
+cd ~
+
+#Installing VSCode
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+
+sudo dnf check-update
+sudo dnf -y install code
+
+sudo echo "fs.inotify.max_user_watches=524288" > /etc/sysctl.conf
+sudo sysctl -p
+
+#Installing Angular and Nx
+npm add --global nx@latest
+npm install -g @angular/cli
+
+#Installing JetBrains Toolbox
+sudo dnf -y install libfuse2 libxi6 libxrender1 libxtst6 mesa-utils libfontconfig libgtk-3-bin tar dbus-user-session
+sudo mkdir -p /opt/jetbrains-toolbox
+cd /opt/jetbrains-toolbox
+wget -O toolbox.tar.gz https://download.jetbrains.com/toolbox/jetbrains-toolbox-2.3.2.31487.tar.gz
+sudo tar -xzf toolbox.tar.gz
