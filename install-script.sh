@@ -78,18 +78,21 @@ sudo dnf -y group install "Python Classroom"
 sudo dnf -y install haxe
 mkdir ~/.personal/haxelib && haxelib setup ~/.personal/haxelib
 
-sudo dnf -y install libpng-devel turbojpeg-devel libvorbis-devel openal-soft-devel SDL2-devel mesa-libGLU-devel mbedtls-devel libuv-devel sqlite-devel pcre-devel
+#Uncomment everything below this when Hashlink fixed GCC 14.1 compatibility
 
-cd /opt
-sudo wget -O hashlink.tar.gz https://github.com/HaxeFoundation/hashlink/archive/refs/tags/1.14.tar.gz
-tar xzf hashlink.tar.gz
-cd hashlink-1.14
-sudo make
-sudo make install
+#sudo dnf -y install libpng* turbo* libvorbis* openal* SDL2* mbedtls* uv* libuv* libsdl2* GL*
+#sudo dnf -y install libpng-devel turbojpeg-devel libvorbis-devel openal-soft-devel SDL2-devel mesa-libGLU-devel mbedtls-devel libuv-devel  sqlite-devel libpcap-devel
+
+#cd /opt
+#sudo wget -O hashlink.tar.gz https://github.com/HaxeFoundation/hashlink/archive/refs/tags/1.14.tar.gz
+#tar xzf hashlink.tar.gz
+#cd hashlink-1.14
+#sudo make
+#sudo make install
 
 sudo ldconfig
 
-cd
+cd ~
 
 #Install Nodejs
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
@@ -106,8 +109,8 @@ sudo dnf -y group install "Java Development"
 
 #Installing Dotnet
 wget -O dotnet5.tar.gz https://download.visualstudio.microsoft.com/download/pr/904da7d0-ff02-49db-bd6b-5ea615cbdfc5/966690e36643662dcc65e3ca2423041e/dotnet-sdk-5.0.408-linux-x64.tar.gz
-sudo mkdir -p /usr/share/dotnet
-sudo tar zxf dotnet5.tar.gz -C /usr/share/dotnet
+sudo mkdir -p /usr/lib64/dotnet
+sudo tar zxf dotnet5.tar.gz -C /usr/lib64/dotnet
 
 sudo dnf -y install dotnet-sdk-8.0 dotnet-sdk-6.0
 sudo dnf -y install aspnetcore-runtime-8.0 aspnetcore-runtime-6.0
@@ -217,3 +220,7 @@ sudo mkdir -p /opt/jetbrains-toolbox
 cd /opt/jetbrains-toolbox
 wget -O toolbox.tar.gz https://download.jetbrains.com/toolbox/jetbrains-toolbox-2.3.2.31487.tar.gz
 sudo tar -xzf toolbox.tar.gz
+
+#Installing wkhtmltopdf
+sudo dnf -y install wkhtmltopdf
+
