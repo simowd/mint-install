@@ -59,7 +59,7 @@ sudo dnf -y install gnome-extensions-app.x86_64 gnome-tweaks.noarch
 sudo dnf install -y gnome-shell-extension-pop-shell xprop
 
 #Install zsh and oh-my-zsh
-sudo dnf -y install curl wget zsh git neovim unzip
+sudo dnf -y install curl wget zsh git neovim unzip stow
 sudo chsh -s $(which zsh) $CUSTOM_USER
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
