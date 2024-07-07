@@ -173,6 +173,7 @@ sudo flatpak install -y flathub com.obsproject.Studio
 sudo flatpak install -y flathub com.spotify.Client
 sudo flatpak install -y flathub org.onlyoffice.desktopeditors
 sudo flatpak install -y flathub io.dbeaver.DBeaverCommunity
+sudo flatpak install -y flathub org.godotengine.Godot
 #Installing Spotify
 git clone https://github.com/abba23/spotify-adblock.git ~/.personal/spotify-adblock
 cd ~/.personal/spotify-adblock
