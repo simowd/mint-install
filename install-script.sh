@@ -135,6 +135,8 @@ sudo rm -f Cascadia.zip
 
 sudo fc-cache -f -v
 
+curl -s -o- https://raw.githubusercontent.com/rafaelmardojai/firefox-gnome-theme/master/scripts/install-by-curl.sh | bash
+
 #"""""""""""""""""""""""""""""""""""""
 #""" Installing essential programs """
 #"""""""""""""""""""""""""""""""""""""
